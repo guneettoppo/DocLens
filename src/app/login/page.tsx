@@ -14,112 +14,65 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    e.preventDefault(); setError(""); setLoading(true);
     const result = await login(email, password);
-    if (result.error) {
-      setError(result.error);
-      setLoading(false);
-    } else {
-      router.push("/dashboard");
-    }
+    if (result.error) { setError(result.error); setLoading(false); }
+    else router.push("/dashboard");
   };
 
   return (
     <div className="min-h-screen bg-paper flex">
-      {/* Brand side — Swiss grid aesthetic */}
-      <div className="hidden lg:flex w-[44%] flex-col justify-between p-12 border-r border-line">
-        <Link
-          href="/"
-          className="text-2xl font-extrabold tracking-tight text-ink"
-        >
-          DocLens
-        </Link>
+      <div className="hidden lg:flex w-[44%] flex-col justify-between p-14 border-r-2 border-line">
+        <Link href="/" className="text-3xl font-extrabold tracking-tight text-ink">DocLens</Link>
         <div>
-          <div className="h-px bg-line mb-6 w-16" />
-          <p className="section-number mb-3">Document Intelligence</p>
-          <p className="body-text max-w-xs">
-            Precision tracking for shared documents. Know every page every
-            viewer reads.
+          <div className="h-1 bg-line mb-8 w-20" />
+          <p className="section-number mb-4" style={{ fontSize: "0.8125rem" }}>Document Intelligence</p>
+          <p className="text-xl text-muted font-medium max-w-sm leading-relaxed">
+            Precision tracking for shared documents. Know every page every viewer reads.
           </p>
-          <div className="grid grid-cols-2 gap-6 mt-12">
+          <div className="grid grid-cols-2 gap-8 mt-16">
             <div>
-              <p className="text-3xl font-extrabold tracking-[-0.02em]">∞</p>
+              <p className="stat-number text-ink tracking-tighter" style={{ fontSize: "4rem" }}>∞</p>
               <p className="stat-label">Tracking Depth</p>
             </div>
             <div>
-              <p className="text-3xl font-extrabold tracking-[-0.02em]">100%</p>
+              <p className="stat-number text-ink tracking-tighter" style={{ fontSize: "4rem" }}>100%</p>
               <p className="stat-label">Attribution</p>
             </div>
           </div>
         </div>
-        <p className="text-[0.625rem] font-bold uppercase tracking-[0.12em] text-faint font-mono">
-          Secure &middot; Precise &middot; Swiss
+        <p className="text-[0.75rem] font-bold uppercase tracking-[0.15em] text-faint font-mono">
+          Secure · Precise · Swiss
         </p>
       </div>
 
-      {/* Form side */}
-      <div className="flex-1 flex items-center p-8">
-        <div className="w-full max-w-sm mx-auto">
-          <div className="lg:hidden mb-10">
-            <Link
-              href="/"
-              className="text-2xl font-extrabold tracking-tight text-ink"
-            >
-              DocLens
-            </Link>
+      <div className="flex-1 flex items-center p-10">
+        <div className="w-full max-w-md mx-auto">
+          <div className="lg:hidden mb-12">
+            <Link href="/" className="text-3xl font-extrabold tracking-tight text-ink">DocLens</Link>
           </div>
-
-          <div className="mb-8">
-            <p className="section-number mb-1">Sign in</p>
-            <p className="body-text">Access your document dashboard.</p>
+          <div className="mb-10">
+            <p className="section-number mb-2" style={{ fontSize: "0.8125rem" }}>Sign in</p>
+            <p className="text-xl text-muted font-medium">Access your document dashboard.</p>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-7">
             {error && (
-              <div className="p-3 border border-accent/20 text-accent text-[0.8125rem] font-medium bg-accent/5">
-                {error}
-              </div>
+              <div className="p-4 border-2 border-accent/30 text-accent text-lg font-semibold bg-accent-dim">{error}</div>
             )}
             <div>
-              <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-swiss"
-                placeholder="you@example.com"
-                required
-              />
+              <label className="block text-[0.8125rem] font-extrabold uppercase tracking-[0.12em] text-faint mb-3">Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input-swiss" placeholder="you@example.com" required />
             </div>
             <div>
-              <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-swiss"
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
+              <label className="block text-[0.8125rem] font-extrabold uppercase tracking-[0.12em] text-faint mb-3">Password</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="input-swiss" placeholder="••••••••" required minLength={6} />
             </div>
-            <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+            <button type="submit" disabled={loading} className="btn-primary w-full mt-4" style={{ fontSize: "1rem", padding: "1.125rem 2rem" }}>
               {loading ? "Signing in…" : "Sign in"}
             </button>
-            <p className="text-[0.8125rem] text-muted pt-2">
+            <p className="text-lg text-muted pt-3 font-medium">
               No account?{" "}
-              <Link
-                href="/register"
-                className="text-accent font-semibold hover:text-accent-hover transition-colors"
-              >
-                Register
-              </Link>
+              <Link href="/register" className="text-accent font-bold hover:text-accent-hover transition-colors">Register</Link>
             </p>
           </form>
         </div>
