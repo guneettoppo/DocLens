@@ -10,7 +10,10 @@ export async function saveFile(
   const slug = generateSlug();
   const fileName = `${slug}${ext}`;
 
-  const blob = await put(fileName, buffer);
+  const blob = await put(fileName, buffer, {
+    access: "public",
+    addRandomSuffix: false,
+  });
 
   return { filePath: blob.url, slug, ext };
 }
