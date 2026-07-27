@@ -44,6 +44,9 @@ yarn-error.log*
 .windsurf/
 skills-lock.json
 
+# IDE
+.idea/
+
 # vercel
 .vercel
 
