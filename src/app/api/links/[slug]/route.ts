@@ -43,28 +43,34 @@ export async function GET(
       );
     }
 
-    // Check if destructed (for self-destruct links)
-    if (link.isDestruct && link.viewCount >= link.maxViews && link.maxViews > 0) {
+    // SELF-DESTRUCT: if viewed once already, block
+    if (link.isDestruct && link.viewCount > 0) {
       return NextResponse.json(
         { error: "This document has been self-destructed after being viewed" },
         { status: 410 }
       );
     }
 
-    // If maxViews is 0, it means unlimited
-    if (link.maxViews > 0 && link.viewCount >= link.maxViews) {
+    // MAX VIEWS (non-destruct): if maxViews > 0 and viewCount >= maxViews
+    if (!link.isDestruct && link.maxViews > 0 && link.viewCount >= link.maxViews) {
       return NextResponse.json(
         { error: "View limit reached for this link" },
         { status: 410 }
       );
     }
 
+    // Increment view count
+    await prisma.shareLink.update({
+      where: { id: link.id },
+      data: { viewCount: { increment: 1 } },
+    });
+
     return NextResponse.json({
       link: {
         slug: link.slug,
         isDestruct: link.isDestruct,
         expiresAt: link.expiresAt,
-        viewCount: link.viewCount,
+        viewCount: link.viewCount + 1,
         maxViews: link.maxViews,
       },
       document: link.document,
