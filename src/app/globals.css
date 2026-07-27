@@ -157,3 +157,26 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #D4D4D0; }
 ::-webkit-scrollbar-thumb:hover { background: #999999; }
+
+/* Force red accent on all form controls */
+select {
+  accent-color: #E53E3E;
+}
+select:focus {
+  outline: none;
+  border-color: #E53E3E;
+}
+
+/* Override browser default blue for all form elements */
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+  accent-color: #E53E3E;
+}
+
+/* Override select option highlight in WebKit */
+select option:checked,
+select option:hover {
+  background: #E53E3E;
+  color: #FAFAF9;
+}
