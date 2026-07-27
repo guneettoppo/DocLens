@@ -158,6 +158,17 @@ body {
 ::-webkit-scrollbar-thumb { background: #D4D4D0; }
 ::-webkit-scrollbar-thumb:hover { background: #999999; }
 
+/* Text selection — red accent */
+::selection {
+  background: #E53E3E;
+  color: #FAFAF9;
+}
+
+::-moz-selection {
+  background: #E53E3E;
+  color: #FAFAF9;
+}
+
 /* Force red accent on all form controls */
 select {
   accent-color: #E53E3E;
