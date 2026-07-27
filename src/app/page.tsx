@@ -157,7 +157,9 @@ export default function HomePage() {
         <div className="grid grid-cols-12 gap-10">
           <div className="col-span-12 md:col-span-4">
             <p className="section-number mb-4" style={{ fontSize: "0.8125rem" }}>(01)</p>
-            <h3 className="text-2xl font-extrabold tracking-tight mb-4">Upload</h3>
+            <h3 className="text-2xl font-extrabold tracking-tight mb-4">
+              <RevealText image="/screenshots/upload.png">Upload</RevealText>
+            </h3>
             <p className="body-text">
               Drop any PDF, DOC, or PPT file. We handle storage and processing.
               No configuration needed.
@@ -165,7 +167,9 @@ export default function HomePage() {
           </div>
           <div className="col-span-12 md:col-span-4">
             <p className="section-number mb-4" style={{ fontSize: "0.8125rem" }}>(02)</p>
-            <h3 className="text-2xl font-extrabold tracking-tight mb-4">Share</h3>
+            <h3 className="text-2xl font-extrabold tracking-tight mb-4">
+              <RevealText image="/screenshots/share.png">Share</RevealText>
+            </h3>
             <p className="body-text">
               Generate a tracked link in one click. Add self-destruct, expiry
               dates, or view limits.
@@ -173,7 +177,9 @@ export default function HomePage() {
           </div>
           <div className="col-span-12 md:col-span-4">
             <p className="section-number mb-4" style={{ fontSize: "0.8125rem" }}>(03)</p>
-            <h3 className="text-2xl font-extrabold tracking-tight mb-4">Track</h3>
+            <h3 className="text-2xl font-extrabold tracking-tight mb-4">
+              <RevealText image="/screenshots/track.png">Track</RevealText>
+            </h3>
             <p className="body-text">
               See every page every viewer reads. Attribution, timestamps,
               readership heatmaps — no guesswork.
