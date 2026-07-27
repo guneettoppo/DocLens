@@ -314,7 +314,7 @@ export default function HomePage() {
             <span className="text-[0.9375rem] font-medium text-faint">Document Intelligence Platform</span>
           </div>
           <p className="font-mono text-[0.75rem] font-bold uppercase tracking-[0.12em] text-faint">
-            Swiss Precision
+            Built with 🧠 & ❤️.
           </p>
         </div>
       </footer>
