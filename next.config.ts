@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Allow 50mb body size for file uploads via Route Handlers
+  output: "standalone",
   serverExternalPackages: ["@prisma/adapter-better-sqlite3", "better-sqlite3"],
 };
 

@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+*.db
+prisma/dev.db
+.env*
+.DS_Store
+README.md
+*.local

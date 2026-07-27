@@ -2,7 +2,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import { generateSlug } from "./nanoid";
 
-const UPLOADS_DIR = path.join(process.cwd(), "uploads");
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(process.cwd(), "uploads");
 
 export async function ensureUploadsDir() {
   try {
