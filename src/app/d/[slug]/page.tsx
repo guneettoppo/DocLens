@@ -62,7 +62,6 @@ export default function DocViewPage({
     if (!slug) return;
     if (!viewerInfo && showingForm) return;
     if (!viewerInfo) return;
-
     setLoading(true);
     fetch(`/api/links/${slug}`)
       .then(async (res) => {
@@ -102,60 +101,54 @@ export default function DocViewPage({
             viewerEmail: viewerInfo.email,
           }),
         });
-      } catch {
-        // silently fail
-      }
+      } catch {}
     },
     [data, slug, viewerInfo]
   );
 
-  // Self-destruct consumed
   if (gone) {
     return (
-      <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center gap-5 p-8">
-        <div className="h-0.5 w-20 bg-red mb-4" />
-        <p className="font-display text-3xl text-text-primary">Destroyed</p>
-        <p className="text-text-secondary text-[0.875rem] max-w-xs text-center leading-relaxed">
-          This document was viewed once and has self-destructed. It is no longer
-          available.
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center gap-6 p-8">
+        <div className="h-0.5 w-24 bg-accent" />
+        <p className="section-heading">Destroyed</p>
+        <p className="body-text text-center max-w-sm">
+          This document was viewed and has self-destructed. It is no longer
+          accessible.
         </p>
       </div>
     );
   }
 
-  // Expired
   if (expired) {
     return (
-      <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center gap-5 p-8">
-        <div className="h-0.5 w-20 bg-text-tertiary mb-4" />
-        <p className="font-display text-3xl text-text-primary">Expired</p>
-        <p className="text-text-secondary text-[0.875rem] max-w-xs text-center leading-relaxed">
-          This share link has expired and is no longer accessible.
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center gap-6 p-8">
+        <div className="h-0.5 w-24 bg-line-strong" />
+        <p className="section-heading">Expired</p>
+        <p className="body-text text-center max-w-sm">
+          This share link has expired and is no longer available.
         </p>
       </div>
     );
   }
 
-  // Error
   if (error) {
     return (
-      <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center gap-5 p-8">
-        <div className="h-0.5 w-20 bg-text-tertiary mb-4" />
-        <p className="font-display text-2xl text-text-primary">Error</p>
-        <p className="text-text-secondary text-[0.875rem]">{error}</p>
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center gap-6 p-8">
+        <div className="h-0.5 w-24 bg-line-strong" />
+        <p className="section-heading">Error</p>
+        <p className="body-text">{error}</p>
       </div>
     );
   }
 
-  // Viewer identification form
   if (showingForm && !viewerInfo) {
     return (
-      <div className="min-h-screen bg-bg-primary flex items-center justify-center p-8">
+      <div className="min-h-screen bg-paper flex items-center justify-center p-8">
         <div className="w-full max-w-sm">
-          <p className="font-display text-2xl text-text-primary mb-1">
+          <p className="text-2xl font-extrabold tracking-tight text-ink mb-1">
             DocLens
           </p>
-          <p className="text-text-secondary text-[0.8125rem] mb-8 leading-relaxed">
+          <p className="body-text mb-8">
             {data?.document.originalName ||
               "Enter your details to view this document"}
           </p>
@@ -177,39 +170,36 @@ export default function DocViewPage({
                 setShowingForm(false);
               }
             }}
-            className="space-y-4"
+            className="space-y-5"
           >
             <div>
-              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
-                Your name <span className="text-red">*</span>
+              <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
+                Your Name <span className="text-accent">*</span>
               </label>
               <input
                 name="name"
                 type="text"
                 required
-                className="input-sharp"
+                className="input-swiss"
                 placeholder="Your name"
               />
             </div>
-
             <div>
-              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
-                Your email <span className="text-red">*</span>
+              <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
+                Your Email <span className="text-accent">*</span>
               </label>
               <input
                 name="email"
                 type="email"
                 required
-                className="input-sharp"
+                className="input-swiss"
                 placeholder="you@example.com"
               />
             </div>
-
             <button type="submit" className="btn-primary w-full">
               View Document
             </button>
-
-            <p className="text-[0.6875rem] text-text-tertiary leading-relaxed">
+            <p className="text-[0.6875rem] text-faint leading-relaxed">
               Stored locally. Used only for readership analytics.
             </p>
           </form>
@@ -218,11 +208,10 @@ export default function DocViewPage({
     );
   }
 
-  // Loading
   if (!data) {
     return (
-      <div className="min-h-screen bg-bg-primary flex items-center justify-center">
-        <div className="h-0.5 w-16 bg-accent animate-pulse" />
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <div className="h-0.5 w-20 bg-accent animate-pulse" />
       </div>
     );
   }
@@ -230,36 +219,36 @@ export default function DocViewPage({
   const isPDF = data.document.mimeType === "application/pdf";
 
   return (
-    <div className="min-h-screen bg-bg-primary flex flex-col">
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-5 py-3 bg-bg-secondary border-b border-border">
+    <div className="min-h-screen bg-paper flex flex-col">
+      {/* Top bar — Swiss minimal */}
+      <div className="flex items-center justify-between px-6 py-3 bg-surface border-b border-line">
         <div className="flex items-center gap-4">
-          <span className="font-display text-sm text-text-primary">DocLens</span>
-          <span className="h-4 w-px bg-border" />
-          <span className="text-[0.75rem] text-text-secondary truncate max-w-xs">
+          <span className="text-sm font-extrabold tracking-tight text-ink">
+            DocLens
+          </span>
+          <span className="text-faint">/</span>
+          <span className="text-[0.8125rem] text-muted truncate max-w-xs font-medium">
             {data.document.originalName}
           </span>
-          <span className="text-[0.625rem] text-text-tertiary font-mono">
+          <span className="text-[0.6875rem] text-faint font-mono font-semibold">
             {data.document.pages}p
           </span>
         </div>
         <div className="flex items-center gap-4">
           {data.link.expiresAt && (
-            <span className="text-[0.6875rem] text-text-tertiary font-mono">
-              Expires{" "}
-              {new Date(data.link.expiresAt).toLocaleString()}
+            <span className="text-[0.6875rem] text-faint font-mono">
+              Expires {new Date(data.link.expiresAt).toLocaleString()}
             </span>
           )}
           {data.link.isDestruct && (
-            <span className="text-[0.625rem] font-mono uppercase tracking-[0.1em] text-red px-2 py-0.5 border border-red/20">
-              Self&#8209;destruct
+            <span className="tag text-accent border-accent/20">
+              Self-Destruct
             </span>
           )}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex items-center justify-center bg-[#0A0A0C] p-4">
+      <div className="flex-1 flex items-center justify-center bg-[#F0EFEC] p-4">
         {isPDF ? (
           <div className="w-full h-full max-w-5xl">
             <PDFCanvasViewer
@@ -271,8 +260,8 @@ export default function DocViewPage({
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-text-secondary text-[0.875rem] mb-4">
-              Preview not available for this file type
+            <p className="body-text mb-6">
+              Preview not available for this file type.
             </p>
             <a
               href={`/api/files/${data.document.slug}`}

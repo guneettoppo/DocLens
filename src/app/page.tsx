@@ -27,21 +27,17 @@ export default function HomePage() {
   const handleUpload = useCallback(async (file: File) => {
     setUploadState("uploading");
     setError("");
-
     try {
       const formData = new FormData();
       formData.append("file", file);
-
       const res = await fetch("/api/documents/upload", {
         method: "POST",
         body: formData,
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || "Upload failed");
       }
-
       const doc: UploadedDoc = await res.json();
       setUploadedDoc(doc);
       setUploadState("done");
@@ -82,12 +78,10 @@ export default function HomePage() {
           maxViews: maxViews > 0 ? maxViews : 0,
         }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || "Failed to create link");
       }
-
       const link = await res.json();
       setShareUrl(link.url);
     } catch (err: any) {
@@ -102,25 +96,28 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-bg-primary flex flex-col">
+    <main className="min-h-screen bg-paper">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-border">
-        <Link href="/" className="font-display text-xl tracking-tight text-text-primary">
+      <nav className="flex items-center justify-between px-10 py-6 border-b border-line max-w-screen-2xl mx-auto">
+        <Link
+          href="/"
+          className="text-xl font-extrabold tracking-tight text-ink"
+        >
           DocLens
         </Link>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-6">
           {user ? (
             <>
               <Link
                 href="/dashboard"
-                className="text-[0.8125rem] text-text-secondary hover:text-text-primary transition-colors"
+                className="text-[0.8125rem] font-medium text-muted hover:text-ink transition-colors"
               >
                 Dashboard
               </Link>
-              <span className="text-[0.8125rem] text-text-tertiary">{user.name}</span>
+              <span className="text-[0.8125rem] text-faint">{user.name}</span>
               <button
                 onClick={logout}
-                className="text-[0.8125rem] text-text-tertiary hover:text-red transition-colors"
+                className="text-[0.8125rem] text-faint hover:text-accent transition-colors"
               >
                 Sign out
               </button>
@@ -129,11 +126,11 @@ export default function HomePage() {
             <>
               <Link
                 href="/login"
-                className="text-[0.8125rem] text-text-secondary hover:text-text-primary transition-colors"
+                className="text-[0.8125rem] font-medium text-muted hover:text-ink transition-colors"
               >
                 Sign in
               </Link>
-              <Link href="/register" className="btn-primary text-[0.8125rem]">
+              <Link href="/register" className="btn-primary">
                 Register
               </Link>
             </>
@@ -141,21 +138,97 @@ export default function HomePage() {
         </div>
       </nav>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-8">
-        <div className="w-full max-w-xl">
-          {/* Header — nothing centered or dramatic */}
-          <div className="mb-10">
-            <div className="divider-redacted mb-5" />
-            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-text-tertiary mb-3">
-              Document Intelligence
+      {/* Hero — Swiss grid: headline left, stats right */}
+      <section className="max-w-screen-2xl mx-auto px-10 pt-20 pb-16 border-b border-line">
+        <div className="grid grid-cols-12 gap-8">
+          <div className="col-span-12 lg:col-span-7">
+            <p className="section-number mb-4">Document Intelligence</p>
+            <h1 className="text-[3.25rem] font-extrabold leading-[1.05] tracking-[-0.03em] max-w-xl">
+              Precision output from shared documents.
+            </h1>
+            <p className="body-text mt-6 max-w-md">
+              Upload any document. Generate a tracked link. See which pages your
+              viewers read — with self-destruct when the job is done.
             </p>
-            <p className="text-text-secondary text-[0.875rem] max-w-sm leading-relaxed">
-              Upload a document. Share a tracked link. See every page your
-              viewers read. Self-destruct when you&apos;re done.
-            </p>
+            <div className="flex gap-3 mt-8">
+              <button
+                onClick={() =>
+                  document.getElementById("file-input")?.click()
+                }
+                className="btn-primary"
+              >
+                Upload Document
+              </button>
+              {user && (
+                <Link href="/dashboard" className="btn-outline">
+                  View Dashboard
+                </Link>
+              )}
+            </div>
           </div>
 
-          {/* Upload Area */}
+          <div className="col-span-12 lg:col-span-5 grid grid-cols-2 gap-6 lg:pl-8">
+            <div>
+              <p className="stat-number text-ink">0</p>
+              <p className="stat-label">Page Views Missed</p>
+            </div>
+            <div>
+              <p className="stat-number text-ink">∞</p>
+              <p className="stat-label">Tracking Depth</p>
+            </div>
+            <div>
+              <p className="stat-number text-ink">100%</p>
+              <p className="stat-label">Viewer Attribution</p>
+            </div>
+            <div>
+              <p className="stat-number text-ink">1</p>
+              <p className="stat-label">Click to Share</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features — numbered grid */}
+      <section className="max-w-screen-2xl mx-auto px-10 py-20 border-b border-line">
+        <p className="section-number mb-2">How it works</p>
+        <h2 className="section-heading mb-12">
+          Three steps. Zero friction.
+        </h2>
+
+        <div className="grid grid-cols-12 gap-8">
+          <div className="col-span-12 md:col-span-4">
+            <p className="section-number mb-3">(01)</p>
+            <h3 className="text-lg font-bold tracking-tight mb-3">Upload</h3>
+            <p className="body-text">
+              Drop any PDF, DOC, or PPT file. We handle the storage and
+              processing. No configuration, no setup.
+            </p>
+          </div>
+          <div className="col-span-12 md:col-span-4">
+            <p className="section-number mb-3">(02)</p>
+            <h3 className="text-lg font-bold tracking-tight mb-3">Share</h3>
+            <p className="body-text">
+              Generate a tracked link in one click. Set self-destruct, expiry,
+              or view limits. Send it to anyone.
+            </p>
+          </div>
+          <div className="col-span-12 md:col-span-4">
+            <p className="section-number mb-3">(03)</p>
+            <h3 className="text-lg font-bold tracking-tight mb-3">Track</h3>
+            <p className="body-text">
+              See exactly which pages every viewer reads. Know who viewed, when,
+              and for how long. No guesswork.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Upload Zone */}
+      <section
+        id="upload-section"
+        className="max-w-screen-2xl mx-auto px-10 py-20"
+      >
+        <div className="max-w-2xl">
           {uploadState !== "done" && (
             <div
               onDrop={handleDrop}
@@ -165,10 +238,10 @@ export default function HomePage() {
               }}
               onDragLeave={() => setIsDragOver(false)}
               onClick={() => document.getElementById("file-input")?.click()}
-              className={`border border-dashed p-14 cursor-pointer transition-colors ${
+              className={`border border-dashed p-16 cursor-pointer transition-all ${
                 isDragOver
-                  ? "border-accent bg-accent-subtle"
-                  : "border-border-strong hover:border-text-tertiary"
+                  ? "border-accent bg-accent/5"
+                  : "border-line-strong hover:border-muted"
               }`}
             >
               <input
@@ -180,82 +253,66 @@ export default function HomePage() {
               />
 
               {uploadState === "uploading" ? (
-                <div className="flex flex-col items-center gap-3">
-                  <div className="h-0.5 w-16 bg-accent animate-pulse" />
-                  <span className="text-[0.8125rem] text-text-tertiary">
-                    Processing...
-                  </span>
+                <div className="text-center">
+                  <div className="inline-block h-0.5 w-20 bg-accent animate-pulse mb-4" />
+                  <p className="text-[0.8125rem] font-semibold uppercase tracking-[0.12em] text-faint">
+                    Processing…
+                  </p>
                 </div>
               ) : (
                 <div className="text-center">
-                  <svg
-                    className="mx-auto mb-5 text-text-tertiary"
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.335-2.313A3.375 3.375 0 0118.75 12a3.375 3.375 0 01-3.375 3.375H6.75z"
-                    />
-                  </svg>
-                  <p className="text-[0.875rem] text-text-secondary mb-1">
+                  <p className="text-lg font-bold tracking-tight mb-2">
                     Drop your file here
                   </p>
-                  <p className="text-[0.75rem] text-text-tertiary">
-                    PDF, PPT, DOC up to 50MB — or click to browse
+                  <p className="text-[0.8125rem] text-muted">
+                    PDF, PPT, DOC — up to 50MB
                   </p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Error */}
           {error && (
-            <div className="mt-4 p-3 border border-red/20 text-red text-[0.8125rem] bg-red/5">
+            <div className="mt-4 p-3 border border-accent/20 text-accent text-[0.8125rem] font-medium bg-accent/5">
               {error}
             </div>
           )}
 
-          {/* Link Options */}
           {uploadState === "done" && uploadedDoc && !shareUrl && (
-            <div className="mt-6 space-y-4">
-              <div className="card">
-                <p className="text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-1">
-                  Uploaded
+            <div className="space-y-6">
+              <div className="border border-line bg-surface p-6">
+                <p className="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
+                  Uploaded Document
                 </p>
-                <p className="text-[0.875rem] text-text-primary truncate">
+                <p className="font-bold text-lg tracking-tight truncate">
                   {uploadedDoc.originalName}
                 </p>
               </div>
 
-              <div className="card space-y-4">
+              <div className="border border-line bg-surface p-6 space-y-5">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isDestruct}
                     onChange={(e) => setIsDestruct(e.target.checked)}
-                    className="accent-accent w-3.5 h-3.5"
+                    className="accent-accent w-4 h-4"
                   />
-                  <span className="text-[0.8125rem] text-text-secondary">
+                  <span className="text-[0.875rem] text-ink">
                     Self-destruct after first view
                   </span>
                 </label>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-[0.8125rem] text-text-tertiary w-24">
+                <div className="flex items-center gap-4">
+                  <span className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-faint w-28">
                     Expires
                   </span>
                   <select
                     value={expiresInHours}
                     onChange={(e) => setExpiresInHours(Number(e.target.value))}
-                    className="flex-1 input-sharp"
+                    className="flex-1 input-swiss"
+                    style={{ paddingLeft: 0, paddingRight: 0 }}
                   >
-                    <option value={0}>Never</option>
+                    <option value={0}>Never expires</option>
                     <option value={1}>1 hour</option>
                     <option value={6}>6 hours</option>
                     <option value={24}>24 hours</option>
@@ -264,9 +321,9 @@ export default function HomePage() {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-[0.8125rem] text-text-tertiary w-24">
-                    Max views
+                <div className="flex items-center gap-4">
+                  <span className="text-[0.75rem] font-semibold uppercase tracking-[0.08em] text-faint w-28">
+                    Max Views
                   </span>
                   <input
                     type="number"
@@ -274,7 +331,7 @@ export default function HomePage() {
                     value={maxViews}
                     onChange={(e) => setMaxViews(Number(e.target.value))}
                     placeholder="Unlimited"
-                    className="flex-1 input-sharp"
+                    className="flex-1 input-swiss"
                   />
                 </div>
               </div>
@@ -285,11 +342,10 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Share URL Result */}
           {shareUrl && (
-            <div className="mt-6 space-y-4">
-              <div className="card">
-                <p className="text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-3">
+            <div className="space-y-6">
+              <div className="border border-line bg-surface p-6">
+                <p className="text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-3">
                   Share Link
                 </p>
                 <div className="flex gap-2">
@@ -297,7 +353,7 @@ export default function HomePage() {
                     type="text"
                     readOnly
                     value={shareUrl}
-                    className="flex-1 input-sharp font-mono text-[0.75rem]"
+                    className="flex-1 input-swiss font-mono text-[0.8125rem]"
                   />
                   <button onClick={copyLink} className="btn-primary">
                     {copied ? "Copied" : "Copy"}
@@ -316,27 +372,35 @@ export default function HomePage() {
                     setExpiresInHours(0);
                     setMaxViews(0);
                   }}
-                  className="btn-ghost flex-1"
+                  className="btn-outline flex-1"
                 >
                   Upload Another
                 </button>
-                <Link href="/dashboard" className="btn-ghost flex-1 text-center">
-                  View Dashboard
+                <Link href="/dashboard" className="btn-outline flex-1 text-center">
+                  Dashboard
                 </Link>
               </div>
             </div>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Footer */}
-      <footer className="px-8 py-5 border-t border-border flex items-center justify-between">
-        <p className="text-[0.6875rem] text-text-tertiary">
-          DocLens — Document Intelligence
-        </p>
-        <p className="font-mono text-[0.625rem] text-text-tertiary uppercase tracking-[0.1em]">
-          Confidential
-        </p>
+      <footer className="border-t border-line px-10 py-8 max-w-screen-2xl mx-auto">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <span className="text-sm font-bold tracking-tight text-ink">
+              DocLens
+            </span>
+            <span className="tag">v1.0</span>
+            <span className="text-[0.75rem] text-faint">
+              Document Intelligence Platform
+            </span>
+          </div>
+          <p className="font-mono text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-faint">
+            Swiss Precision
+          </p>
+        </div>
       </footer>
     </main>
   );

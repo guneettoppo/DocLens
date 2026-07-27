@@ -27,92 +27,97 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary flex">
-      {/* Left — brand */}
-      <div className="hidden lg:flex w-[42%] flex-col justify-between p-10 border-r border-border">
-        <Link href="/" className="font-display text-2xl tracking-tight text-text-primary">
+    <div className="min-h-screen bg-paper flex">
+      {/* Brand side — Swiss grid aesthetic */}
+      <div className="hidden lg:flex w-[44%] flex-col justify-between p-12 border-r border-line">
+        <Link
+          href="/"
+          className="text-2xl font-extrabold tracking-tight text-ink"
+        >
           DocLens
         </Link>
         <div>
-          <div className="divider-redacted mb-5" />
-          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-text-tertiary mb-3">
-            Document Intelligence
+          <div className="h-px bg-line mb-6 w-16" />
+          <p className="section-number mb-3">Document Intelligence</p>
+          <p className="body-text max-w-xs">
+            Precision tracking for shared documents. Know every page every
+            viewer reads.
           </p>
-          <p className="text-text-secondary text-[0.8125rem] max-w-xs leading-relaxed">
-            Track every page. Self-destruct on read. Know who viewed your
-            documents.
-          </p>
+          <div className="grid grid-cols-2 gap-6 mt-12">
+            <div>
+              <p className="text-3xl font-extrabold tracking-[-0.02em]">∞</p>
+              <p className="stat-label">Tracking Depth</p>
+            </div>
+            <div>
+              <p className="text-3xl font-extrabold tracking-[-0.02em]">100%</p>
+              <p className="stat-label">Attribution</p>
+            </div>
+          </div>
         </div>
-        <p className="font-mono text-[0.625rem] text-text-tertiary uppercase tracking-[0.1em]">
-          Confidential
+        <p className="text-[0.625rem] font-bold uppercase tracking-[0.12em] text-faint font-mono">
+          Secure &middot; Precise &middot; Swiss
         </p>
       </div>
 
-      {/* Right — form */}
+      {/* Form side */}
       <div className="flex-1 flex items-center p-8">
         <div className="w-full max-w-sm mx-auto">
-          <div className="lg:hidden mb-8">
-            <Link href="/" className="font-display text-xl text-text-primary">
+          <div className="lg:hidden mb-10">
+            <Link
+              href="/"
+              className="text-2xl font-extrabold tracking-tight text-ink"
+            >
               DocLens
             </Link>
           </div>
 
           <div className="mb-8">
-            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-text-tertiary mb-1">
-              Sign in
-            </p>
-            <p className="text-text-secondary text-[0.8125rem]">
-              Access your document dashboard
-            </p>
+            <p className="section-number mb-1">Sign in</p>
+            <p className="body-text">Access your document dashboard.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="p-3 border border-red/20 text-red text-[0.8125rem] bg-red/5">
+              <div className="p-3 border border-accent/20 text-accent text-[0.8125rem] font-medium bg-accent/5">
                 {error}
               </div>
             )}
-
             <div>
-              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+              <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
                 Email
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input-sharp"
+                className="input-swiss"
                 placeholder="you@example.com"
                 required
               />
             </div>
-
             <div>
-              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+              <label className="block text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-faint mb-2">
                 Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-sharp"
+                className="input-swiss"
                 placeholder="••••••••"
                 required
                 minLength={6}
               />
             </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-primary w-full mt-2"
-            >
-              {loading ? "Signing in..." : "Sign in"}
+            <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+              {loading ? "Signing in…" : "Sign in"}
             </button>
-
-            <p className="text-[0.8125rem] text-text-tertiary pt-2">
+            <p className="text-[0.8125rem] text-muted pt-2">
               No account?{" "}
-              <Link href="/register" className="text-accent hover:text-accent-hover transition-colors">
+              <Link
+                href="/register"
+                className="text-accent font-semibold hover:text-accent-hover transition-colors"
+              >
                 Register
               </Link>
             </p>
