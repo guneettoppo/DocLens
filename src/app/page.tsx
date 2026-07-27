@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/auth-context";
+import { RevealText } from "@/components/reveal-text";
 
 type UploadState = "idle" | "uploading" | "done" | "error";
 
@@ -109,7 +110,9 @@ export default function HomePage() {
           <div className="col-span-12 lg:col-span-7">
             <p className="section-number mb-5" style={{ fontSize: "0.8125rem" }}>Document Intelligence</p>
             <h1 className="text-[4.75rem] font-extrabold leading-[0.95] tracking-[-0.04em] max-w-2xl">
-              Know what they read.
+              <RevealText image="/screenshots/analytics.png">
+                Know what they read.
+              </RevealText>
             </h1>
             <p className="text-[1.25rem] leading-[1.7] text-muted mt-8 max-w-xl">
               Upload a document. Share a tracked link. See every page every
