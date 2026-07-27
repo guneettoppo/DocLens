@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  originalName String
+  mimeType     String
+  fileSize     Int
+  filePath     String
+  pages        Int      @default(0)
+  thumbnail    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  links      ShareLink[]
+  pageViews  PageView[]
+}
+
+model ShareLink {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  documentId String
+  isDestruct Boolean  @default(false)
+  expiresAt  DateTime?
+  maxViews   Int      @default(0)
+  viewCount  Int      @default(0)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  pageViews  PageView[]
+}
+
+model PageView {
+  id         String   @id @default(cuid())
+  documentId String
+  linkId     String?
+  pageNumber Int
+  viewerIp   String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  link       ShareLink? @relation(fields: [linkId], references: [id], onDelete: SetNull)
+}
