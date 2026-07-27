@@ -6,6 +6,10 @@ app = "doclens"
 [env]
   NODE_ENV = "production"
 
+[[mounts]]
+  source = "doclens_data"
+  destination = "/data"
+
 [[services]]
   http_checks = []
   internal_port = 8080
