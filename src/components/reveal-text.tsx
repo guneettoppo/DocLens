@@ -3,14 +3,12 @@
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 type RevealTextProps = {
   children: React.ReactNode;
   image?: string;
   className?: string;
   hoverImageClass?: string;
-  href?: string;
 };
 
 const RevealText = ({
@@ -18,7 +16,6 @@ const RevealText = ({
   image,
   className = "",
   hoverImageClass,
-  href,
 }: RevealTextProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
   const quickToX = useRef<any>(null);
@@ -26,7 +23,9 @@ const RevealText = ({
   const handleMouseEnter = () => {
     if (!imageRef.current) return;
     gsap.killTweensOf(imageRef.current);
-    quickToX.current = gsap.quickTo(imageRef.current, "x", { duration: 0.6 });
+    quickToX.current = gsap.quickTo(imageRef.current, "x", {
+      duration: 0.6,
+    });
     gsap.to(imageRef.current, {
       opacity: 1,
       scale: 1,
@@ -55,7 +54,7 @@ const RevealText = ({
     quickToX.current(offset);
   };
 
-  const content = (
+  return (
     <span
       className={cn("relative inline-block cursor-default", className)}
       onMouseEnter={handleMouseEnter}
@@ -68,26 +67,18 @@ const RevealText = ({
           src={image}
           alt=""
           className={cn(
-            "absolute left-1/2 top-[-6rem] z-30 -translate-x-1/2",
-            "h-16 md:h-20 lg:h-24 w-auto",
-            "object-contain pointer-events-none opacity-0 scale-90",
+            "absolute left-1/2 top-[-9.5rem] z-30 aspect-video -translate-x-1/2",
+            "min-w-44 md:min-w-52 lg:min-w-60",
+            "h-28 md:h-32 lg:h-36",
+            "object-cover pointer-events-none opacity-0 scale-90",
+            "border-2 border-accent",
             hoverImageClass
           )}
         />
       )}
-      <span className="relative z-10">{children}</span>
+      <span>{children}</span>
     </span>
   );
-
-  if (href) {
-    return (
-      <Link href={href} target="_blank" rel="noopener noreferrer">
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
 };
 
 export { RevealText };
