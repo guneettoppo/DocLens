@@ -1,1 +1,137 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-bg-primary: #0D0D0F;
+  --color-bg-secondary: #141416;
+  --color-bg-tertiary: #1C1C1F;
+  --color-text-primary: #E8E4DD;
+  --color-text-secondary: #9C978B;
+  --color-text-tertiary: #5E5C56;
+  --color-accent: #C47E3B;
+  --color-accent-hover: #D4944C;
+  --color-accent-subtle: rgba(196, 126, 59, 0.08);
+  --color-border: rgba(232, 228, 221, 0.06);
+  --color-border-strong: rgba(232, 228, 221, 0.12);
+  --color-red: #C5483B;
+  --color-sage: #5E6B5F;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0D0D0F;
+  color: #E8E4DD;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Redacted divider — signature element */
+.divider-redacted {
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-text-secondary) 5%,
+    var(--color-text-secondary) 45%,
+    transparent 50%,
+    var(--color-text-secondary) 55%,
+    var(--color-text-secondary) 95%,
+    transparent 100%
+  );
+  opacity: 0.12;
+}
+
+/* Input base — sharp, minimal */
+.input-sharp {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: transparent;
+  border: 1px solid rgba(232, 228, 221, 0.12);
+  color: #E8E4DD;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s ease;
+  outline: none;
+}
+
+.input-sharp::placeholder {
+  color: #5E5C56;
+}
+
+.input-sharp:focus {
+  border-color: #C47E3B;
+}
+
+/* Button variants */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.5rem;
+  background: #C47E3B;
+  color: #0D0D0F;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: #D4944C;
+}
+
+.btn-primary:disabled {
+  background: rgba(196, 126, 59, 0.3);
+  cursor: not-allowed;
+  color: rgba(232, 228, 221, 0.3);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: #9C978B;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(232, 228, 221, 0.12);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-ghost:hover {
+  color: #E8E4DD;
+  border-color: rgba(232, 228, 221, 0.25);
+}
+
+/* Card — flat, minimal border */
+.card {
+  background: #141416;
+  border: 1px solid rgba(232, 228, 221, 0.06);
+  padding: 1.25rem;
+}
+
+/* Stat block — for dashboard numbers */
+.stat-block {
+  padding: 1rem 1.25rem;
+  background: #141416;
+  border: 1px solid rgba(232, 228, 221, 0.06);
+}
+
+/* Page-view tracking */
+@view-transition {
+  navigation: auto;
+}

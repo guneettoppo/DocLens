@@ -3,9 +3,9 @@ import "./globals.css";
 import { AuthProvider } from "@/components/auth-context";
 
 export const metadata: Metadata = {
-  title: "DocLens — Secure Document Sharing",
+  title: "DocLens — Track What They Read",
   description:
-    "Upload documents, generate self-destructing links, and track page-level analytics.",
+    "Upload documents. Generate tracked links. See every page view. Self-destruct when done.",
 };
 
 export default function RootLayout({
@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-black text-white antialiased">
+    <html lang="en">
+      <body className="min-h-screen bg-bg-primary text-text-primary font-body">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

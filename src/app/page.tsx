@@ -71,7 +71,6 @@ export default function HomePage() {
 
   const createLink = async () => {
     if (!uploadedDoc) return;
-
     try {
       const res = await fetch("/api/links/create", {
         method: "POST",
@@ -103,25 +102,25 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-black">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
-        <Link href="/" className="text-xl font-bold">
-          <span className="text-blue-500">Doc</span>Lens
+    <main className="min-h-screen bg-bg-primary flex flex-col">
+      {/* Nav */}
+      <nav className="flex items-center justify-between px-8 py-5 border-b border-border">
+        <Link href="/" className="font-display text-xl tracking-tight text-text-primary">
+          DocLens
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           {user ? (
             <>
               <Link
                 href="/dashboard"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-[0.8125rem] text-text-secondary hover:text-text-primary transition-colors"
               >
                 Dashboard
               </Link>
-              <span className="text-sm text-gray-500">{user.name}</span>
+              <span className="text-[0.8125rem] text-text-tertiary">{user.name}</span>
               <button
                 onClick={logout}
-                className="text-sm text-gray-400 hover:text-red-400 transition-colors"
+                className="text-[0.8125rem] text-text-tertiary hover:text-red transition-colors"
               >
                 Sign out
               </button>
@@ -130,30 +129,29 @@ export default function HomePage() {
             <>
               <Link
                 href="/login"
-                className="text-sm text-gray-300 hover:text-white transition-colors"
+                className="text-[0.8125rem] text-text-secondary hover:text-text-primary transition-colors"
               >
                 Sign in
               </Link>
-              <Link
-                href="/register"
-                className="text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-              >
-                Get started
+              <Link href="/register" className="btn-primary text-[0.8125rem]">
+                Register
               </Link>
             </>
           )}
         </div>
       </nav>
 
-      {/* Hero Upload Section */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
-        <div className="w-full max-w-lg">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-bold tracking-tight">
-              <span className="text-blue-500">Doc</span>Lens
-            </h1>
-            <p className="text-gray-400 mt-2">
-              Upload. Share. Track. Self-Destruct.
+      <div className="flex-1 flex flex-col items-center justify-center p-8">
+        <div className="w-full max-w-xl">
+          {/* Header — nothing centered or dramatic */}
+          <div className="mb-10">
+            <div className="divider-redacted mb-5" />
+            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-text-tertiary mb-3">
+              Document Intelligence
+            </p>
+            <p className="text-text-secondary text-[0.875rem] max-w-sm leading-relaxed">
+              Upload a document. Share a tracked link. See every page your
+              viewers read. Self-destruct when you&apos;re done.
             </p>
           </div>
 
@@ -167,10 +165,10 @@ export default function HomePage() {
               }}
               onDragLeave={() => setIsDragOver(false)}
               onClick={() => document.getElementById("file-input")?.click()}
-              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-all ${
+              className={`border border-dashed p-14 cursor-pointer transition-colors ${
                 isDragOver
-                  ? "border-blue-500 bg-blue-500/10"
-                  : "border-gray-700 hover:border-gray-500 bg-gray-900/50"
+                  ? "border-accent bg-accent-subtle"
+                  : "border-border-strong hover:border-text-tertiary"
               }`}
             >
               <input
@@ -180,42 +178,45 @@ export default function HomePage() {
                 className="hidden"
                 onChange={handleFileSelect}
               />
-              <div className="text-gray-400">
-                {uploadState === "uploading" ? (
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full" />
-                    <span>Uploading...</span>
-                  </div>
-                ) : (
-                  <>
-                    <svg
-                      className="mx-auto h-12 w-12 mb-4 text-gray-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.335-2.313A3.375 3.375 0 0118.75 12a3.375 3.375 0 01-3.375 3.375H6.75z"
-                      />
-                    </svg>
-                    <p className="text-lg font-medium mb-1">
-                      Drop your file here
-                    </p>
-                    <p className="text-sm">
-                      or click to browse (PDF, PPT, DOC up to 50MB)
-                    </p>
-                  </>
-                )}
-              </div>
+
+              {uploadState === "uploading" ? (
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-0.5 w-16 bg-accent animate-pulse" />
+                  <span className="text-[0.8125rem] text-text-tertiary">
+                    Processing...
+                  </span>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <svg
+                    className="mx-auto mb-5 text-text-tertiary"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.335-2.313A3.375 3.375 0 0118.75 12a3.375 3.375 0 01-3.375 3.375H6.75z"
+                    />
+                  </svg>
+                  <p className="text-[0.875rem] text-text-secondary mb-1">
+                    Drop your file here
+                  </p>
+                  <p className="text-[0.75rem] text-text-tertiary">
+                    PDF, PPT, DOC up to 50MB — or click to browse
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
           {/* Error */}
           {error && (
-            <div className="mt-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
+            <div className="mt-4 p-3 border border-red/20 text-red text-[0.8125rem] bg-red/5">
               {error}
             </div>
           )}
@@ -223,28 +224,36 @@ export default function HomePage() {
           {/* Link Options */}
           {uploadState === "done" && uploadedDoc && !shareUrl && (
             <div className="mt-6 space-y-4">
-              <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-                <p className="text-sm text-gray-400 mb-1">Uploaded</p>
-                <p className="font-medium truncate">{uploadedDoc.originalName}</p>
+              <div className="card">
+                <p className="text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-1">
+                  Uploaded
+                </p>
+                <p className="text-[0.875rem] text-text-primary truncate">
+                  {uploadedDoc.originalName}
+                </p>
               </div>
 
-              <div className="space-y-3 p-4 bg-gray-900 rounded-lg border border-gray-800">
+              <div className="card space-y-4">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isDestruct}
                     onChange={(e) => setIsDestruct(e.target.checked)}
-                    className="accent-blue-500"
+                    className="accent-accent w-3.5 h-3.5"
                   />
-                  <span className="text-sm">Self-destruct (view once)</span>
+                  <span className="text-[0.8125rem] text-text-secondary">
+                    Self-destruct after first view
+                  </span>
                 </label>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-400 w-28">Expires in:</span>
+                  <span className="text-[0.8125rem] text-text-tertiary w-24">
+                    Expires
+                  </span>
                   <select
                     value={expiresInHours}
                     onChange={(e) => setExpiresInHours(Number(e.target.value))}
-                    className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                    className="flex-1 input-sharp"
                   >
                     <option value={0}>Never</option>
                     <option value={1}>1 hour</option>
@@ -256,22 +265,21 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-400 w-28">Max views:</span>
+                  <span className="text-[0.8125rem] text-text-tertiary w-24">
+                    Max views
+                  </span>
                   <input
                     type="number"
                     min={0}
                     value={maxViews}
                     onChange={(e) => setMaxViews(Number(e.target.value))}
-                    placeholder="0 = unlimited"
-                    className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                    placeholder="Unlimited"
+                    className="flex-1 input-sharp"
                   />
                 </div>
               </div>
 
-              <button
-                onClick={createLink}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
-              >
+              <button onClick={createLink} className="btn-primary w-full">
                 Generate Share Link
               </button>
             </div>
@@ -280,8 +288,8 @@ export default function HomePage() {
           {/* Share URL Result */}
           {shareUrl && (
             <div className="mt-6 space-y-4">
-              <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-                <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
+              <div className="card">
+                <p className="text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-3">
                   Share Link
                 </p>
                 <div className="flex gap-2">
@@ -289,13 +297,10 @@ export default function HomePage() {
                     type="text"
                     readOnly
                     value={shareUrl}
-                    className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono"
+                    className="flex-1 input-sharp font-mono text-[0.75rem]"
                   />
-                  <button
-                    onClick={copyLink}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    {copied ? "Copied!" : "Copy"}
+                  <button onClick={copyLink} className="btn-primary">
+                    {copied ? "Copied" : "Copy"}
                   </button>
                 </div>
               </div>
@@ -311,21 +316,28 @@ export default function HomePage() {
                     setExpiresInHours(0);
                     setMaxViews(0);
                   }}
-                  className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg font-medium transition-colors"
+                  className="btn-ghost flex-1"
                 >
                   Upload Another
                 </button>
-                <Link
-                  href="/dashboard"
-                  className="flex-1 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-medium transition-colors text-center block"
-                >
-                  Dashboard
+                <Link href="/dashboard" className="btn-ghost flex-1 text-center">
+                  View Dashboard
                 </Link>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="px-8 py-5 border-t border-border flex items-center justify-between">
+        <p className="text-[0.6875rem] text-text-tertiary">
+          DocLens — Document Intelligence
+        </p>
+        <p className="font-mono text-[0.625rem] text-text-tertiary uppercase tracking-[0.1em]">
+          Confidential
+        </p>
+      </footer>
     </main>
   );
 }

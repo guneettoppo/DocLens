@@ -18,7 +18,6 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     const result = await register(name, email, password);
     if (result.error) {
       setError(result.error);
@@ -29,72 +28,111 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="w-full max-w-md mx-4">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white">DocLens</h1>
-          <p className="text-gray-400 mt-2">Create your account</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="bg-zinc-900 rounded-xl p-8 space-y-5 border border-zinc-800">
-          {error && (
-            <div className="bg-red-900/30 border border-red-800 text-red-300 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2.5 bg-black border border-zinc-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-              placeholder="Your name"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 bg-black border border-zinc-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-black border border-zinc-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-              placeholder="At least 6 characters"
-              required
-              minLength={6}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800/50 text-white font-medium rounded-lg transition-colors"
-          >
-            {loading ? "Creating account..." : "Create account"}
-          </button>
-
-          <p className="text-center text-sm text-gray-400">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-400 hover:text-blue-300">
-              Sign in
-            </Link>
+    <div className="min-h-screen bg-bg-primary flex">
+      {/* Left — brand */}
+      <div className="hidden lg:flex w-[42%] flex-col justify-between p-10 border-r border-border">
+        <Link href="/" className="font-display text-2xl tracking-tight text-text-primary">
+          DocLens
+        </Link>
+        <div>
+          <div className="divider-redacted mb-5" />
+          <p className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-text-tertiary mb-3">
+            Document Intelligence
           </p>
-        </form>
+          <p className="text-text-secondary text-[0.8125rem] max-w-xs leading-relaxed">
+            Track every page. Self-destruct on read. Know who viewed your
+            documents.
+          </p>
+        </div>
+        <p className="font-mono text-[0.625rem] text-text-tertiary uppercase tracking-[0.1em]">
+          Confidential
+        </p>
+      </div>
+
+      {/* Right — form */}
+      <div className="flex-1 flex items-center p-8">
+        <div className="w-full max-w-sm mx-auto">
+          <div className="lg:hidden mb-8">
+            <Link href="/" className="font-display text-xl text-text-primary">
+              DocLens
+            </Link>
+          </div>
+
+          <div className="mb-8">
+            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.15em] text-text-tertiary mb-1">
+              Register
+            </p>
+            <p className="text-text-secondary text-[0.8125rem]">
+              Create your document intelligence account
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="p-3 border border-red/20 text-red text-[0.8125rem] bg-red/5">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="input-sharp"
+                placeholder="Your name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="input-sharp"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-sharp"
+                placeholder="6+ characters"
+                required
+                minLength={6}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full mt-2"
+            >
+              {loading ? "Creating account..." : "Create account"}
+            </button>
+
+            <p className="text-[0.8125rem] text-text-tertiary pt-2">
+              Already registered?{" "}
+              <Link href="/login" className="text-accent hover:text-accent-hover transition-colors">
+                Sign in
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

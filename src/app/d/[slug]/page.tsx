@@ -35,15 +35,16 @@ export default function DocViewPage({
   const [error, setError] = useState("");
   const [expired, setExpired] = useState(false);
   const [gone, setGone] = useState(false);
-  const [viewerInfo, setViewerInfo] = useState<{ name: string; email: string } | null>(null);
+  const [viewerInfo, setViewerInfo] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
   const [showingForm, setShowingForm] = useState(false);
 
-  // Load slug from params
   useEffect(() => {
     params.then((p) => setSlug(p.slug));
   }, [params]);
 
-  // Check if viewer already identified
   useEffect(() => {
     try {
       const stored = localStorage.getItem(VIEWER_STORAGE_KEY);
@@ -57,7 +58,6 @@ export default function DocViewPage({
     }
   }, []);
 
-  // Validate link when slug is ready and viewer is identified
   useEffect(() => {
     if (!slug) return;
     if (!viewerInfo && showingForm) return;
@@ -88,7 +88,6 @@ export default function DocViewPage({
       .finally(() => setLoading(false));
   }, [slug, viewerInfo, showingForm]);
 
-  // Track page changes with viewer info
   const handlePageChange = useCallback(
     async (pageNumber: number) => {
       if (!data || !slug || !viewerInfo) return;
@@ -104,19 +103,22 @@ export default function DocViewPage({
           }),
         });
       } catch {
-        // Silently fail tracking
+        // silently fail
       }
     },
     [data, slug, viewerInfo]
   );
 
-  // Gone (self-destruct consumed)
+  // Self-destruct consumed
   if (gone) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
-        <span className="text-6xl">💥</span>
-        <h1 className="text-2xl font-bold text-gray-300">This link has self-destructed</h1>
-        <p className="text-gray-500">The document was already viewed and is no longer available.</p>
+      <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center gap-5 p-8">
+        <div className="h-0.5 w-20 bg-red mb-4" />
+        <p className="font-display text-3xl text-text-primary">Destroyed</p>
+        <p className="text-text-secondary text-[0.875rem] max-w-xs text-center leading-relaxed">
+          This document was viewed once and has self-destructed. It is no longer
+          available.
+        </p>
       </div>
     );
   }
@@ -124,10 +126,12 @@ export default function DocViewPage({
   // Expired
   if (expired) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
-        <span className="text-6xl">⏰</span>
-        <h1 className="text-2xl font-bold text-gray-300">Link expired</h1>
-        <p className="text-gray-500">This share link has expired.</p>
+      <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center gap-5 p-8">
+        <div className="h-0.5 w-20 bg-text-tertiary mb-4" />
+        <p className="font-display text-3xl text-text-primary">Expired</p>
+        <p className="text-text-secondary text-[0.875rem] max-w-xs text-center leading-relaxed">
+          This share link has expired and is no longer accessible.
+        </p>
       </div>
     );
   }
@@ -135,10 +139,10 @@ export default function DocViewPage({
   // Error
   if (error) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center gap-4">
-        <span className="text-6xl">⚠️</span>
-        <h1 className="text-2xl font-bold text-gray-300">Error</h1>
-        <p className="text-gray-500">{error}</p>
+      <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center gap-5 p-8">
+        <div className="h-0.5 w-20 bg-text-tertiary mb-4" />
+        <p className="font-display text-2xl text-text-primary">Error</p>
+        <p className="text-text-secondary text-[0.875rem]">{error}</p>
       </div>
     );
   }
@@ -146,23 +150,26 @@ export default function DocViewPage({
   // Viewer identification form
   if (showingForm && !viewerInfo) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-full max-w-md mx-4">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-white">
-              <span className="text-blue-500">Doc</span>Lens
-            </h1>
-            <p className="text-gray-400 mt-2">
-              {data?.document.originalName || "Enter your details to view this document"}
-            </p>
-          </div>
+      <div className="min-h-screen bg-bg-primary flex items-center justify-center p-8">
+        <div className="w-full max-w-sm">
+          <p className="font-display text-2xl text-text-primary mb-1">
+            DocLens
+          </p>
+          <p className="text-text-secondary text-[0.8125rem] mb-8 leading-relaxed">
+            {data?.document.originalName ||
+              "Enter your details to view this document"}
+          </p>
 
           <form
             onSubmit={(e) => {
               e.preventDefault();
               const form = e.currentTarget;
-              const name = (form.querySelector('[name="name"]') as HTMLInputElement).value;
-              const email = (form.querySelector('[name="email"]') as HTMLInputElement).value;
+              const name = (
+                form.querySelector('[name="name"]') as HTMLInputElement
+              ).value;
+              const email = (
+                form.querySelector('[name="email"]') as HTMLInputElement
+              ).value;
               if (name && email) {
                 const info = { name, email };
                 localStorage.setItem(VIEWER_STORAGE_KEY, JSON.stringify(info));
@@ -170,43 +177,40 @@ export default function DocViewPage({
                 setShowingForm(false);
               }
             }}
-            className="bg-zinc-900 rounded-xl p-8 space-y-5 border border-zinc-800"
+            className="space-y-4"
           >
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                Your Name <span className="text-red-400">*</span>
+              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+                Your name <span className="text-red">*</span>
               </label>
               <input
                 name="name"
                 type="text"
                 required
-                className="w-full px-4 py-2.5 bg-black border border-zinc-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-                placeholder="John Doe"
+                className="input-sharp"
+                placeholder="Your name"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                Your Email <span className="text-red-400">*</span>
+              <label className="block text-[0.6875rem] font-mono uppercase tracking-[0.1em] text-text-tertiary mb-2">
+                Your email <span className="text-red">*</span>
               </label>
               <input
                 name="email"
                 type="email"
                 required
-                className="w-full px-4 py-2.5 bg-black border border-zinc-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-                placeholder="john@example.com"
+                className="input-sharp"
+                placeholder="you@example.com"
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-            >
+            <button type="submit" className="btn-primary w-full">
               View Document
             </button>
 
-            <p className="text-xs text-gray-500 text-center">
-              Your details are stored locally and used only for analytics tracking.
+            <p className="text-[0.6875rem] text-text-tertiary leading-relaxed">
+              Stored locally. Used only for readership analytics.
             </p>
           </form>
         </div>
@@ -214,44 +218,48 @@ export default function DocViewPage({
     );
   }
 
-  // No data yet
+  // Loading
   if (!data) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-bg-primary flex items-center justify-center">
+        <div className="h-0.5 w-16 bg-accent animate-pulse" />
       </div>
     );
   }
 
-  // Document viewer
   const isPDF = data.document.mimeType === "application/pdf";
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
+    <div className="min-h-screen bg-bg-primary flex flex-col">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800">
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-gray-300">
+      <div className="flex items-center justify-between px-5 py-3 bg-bg-secondary border-b border-border">
+        <div className="flex items-center gap-4">
+          <span className="font-display text-sm text-text-primary">DocLens</span>
+          <span className="h-4 w-px bg-border" />
+          <span className="text-[0.75rem] text-text-secondary truncate max-w-xs">
             {data.document.originalName}
           </span>
-          <span className="text-xs text-gray-600">
-            {data.document.pages} pages
+          <span className="text-[0.625rem] text-text-tertiary font-mono">
+            {data.document.pages}p
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {data.link.expiresAt && (
-            <span className="text-xs text-gray-500">
-              Expires {new Date(data.link.expiresAt).toLocaleString()}
+            <span className="text-[0.6875rem] text-text-tertiary font-mono">
+              Expires{" "}
+              {new Date(data.link.expiresAt).toLocaleString()}
             </span>
           )}
           {data.link.isDestruct && (
-            <span className="text-xs text-red-400">Self-destruct</span>
+            <span className="text-[0.625rem] font-mono uppercase tracking-[0.1em] text-red px-2 py-0.5 border border-red/20">
+              Self&#8209;destruct
+            </span>
           )}
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex items-center justify-center bg-zinc-950 p-4">
+      <div className="flex-1 flex items-center justify-center bg-[#0A0A0C] p-4">
         {isPDF ? (
           <div className="w-full h-full max-w-5xl">
             <PDFCanvasViewer
@@ -263,11 +271,13 @@ export default function DocViewPage({
           </div>
         ) : (
           <div className="text-center">
-            <p className="text-gray-400 mb-4">This file type cannot be previewed.</p>
+            <p className="text-text-secondary text-[0.875rem] mb-4">
+              Preview not available for this file type
+            </p>
             <a
               href={`/api/files/${data.document.slug}`}
               download
-              className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              className="btn-primary"
             >
               Download {data.document.originalName}
             </a>
