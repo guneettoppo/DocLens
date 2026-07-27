@@ -41,7 +41,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const host = request.headers.get("host") || "localhost:3000";
+    const proto = request.headers.get("x-forwarded-proto") || "http";
+    const baseUrl = `${proto}://${host}`;
 
     return NextResponse.json({
       id: link.id,
