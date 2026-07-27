@@ -1,36 +1,29 @@
-import * as fs from "fs/promises";
-import * as path from "path";
+import { put, del } from "@vercel/blob";
 import { generateSlug } from "./nanoid";
-
-const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(process.cwd(), "uploads");
-
-export async function ensureUploadsDir() {
-  try {
-    await fs.mkdir(UPLOADS_DIR, { recursive: true });
-  } catch {
-    // directory exists
-  }
-}
+import * as path from "path";
 
 export async function saveFile(
   buffer: Buffer,
   originalName: string
 ): Promise<{ filePath: string; slug: string; ext: string }> {
-  await ensureUploadsDir();
-
   const ext = path.extname(originalName) || ".bin";
   const slug = generateSlug();
   const fileName = `${slug}${ext}`;
-  const filePath = path.join(UPLOADS_DIR, fileName);
 
-  await fs.writeFile(filePath, buffer);
+  const blob = await put(fileName, buffer, {
+    access: "public",
+    addRandomSuffix: false,
+  });
 
-  return { filePath, slug, ext };
+  return { filePath: blob.url, slug, ext };
 }
 
 export async function getFile(filePath: string): Promise<Buffer | null> {
   try {
-    return await fs.readFile(filePath);
+    const response = await fetch(filePath);
+    if (!response.ok) return null;
+    const buffer = Buffer.from(await response.arrayBuffer());
+    return buffer;
   } catch {
     return null;
   }
@@ -38,12 +31,8 @@ export async function getFile(filePath: string): Promise<Buffer | null> {
 
 export async function deleteFile(filePath: string): Promise<void> {
   try {
-    await fs.unlink(filePath);
+    await del(filePath);
   } catch {
-    // file already gone
+    // already gone
   }
-}
-
-export function getUploadsDir(): string {
-  return UPLOADS_DIR;
 }
