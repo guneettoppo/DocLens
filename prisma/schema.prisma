@@ -6,6 +6,16 @@ datasource db {
   provider = "sqlite"
 }
 
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  documents Document[]
+}
+
 model Document {
   id           String   @id @default(cuid())
   slug         String   @unique
@@ -15,11 +25,13 @@ model Document {
   filePath     String
   pages        Int      @default(0)
   thumbnail    String?
+  userId       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  links      ShareLink[]
-  pageViews  PageView[]
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  links     ShareLink[]
+  pageViews PageView[]
 }
 
 model ShareLink {
@@ -33,19 +45,21 @@ model ShareLink {
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
 
-  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  pageViews  PageView[]
+  document  Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  pageViews PageView[]
 }
 
 model PageView {
-  id         String   @id @default(cuid())
-  documentId String
-  linkId     String?
-  pageNumber Int
-  viewerIp   String?
-  userAgent  String?
-  createdAt  DateTime @default(now())
+  id           String   @id @default(cuid())
+  documentId   String
+  linkId       String?
+  pageNumber   Int
+  viewerName   String?
+  viewerEmail  String?
+  viewerIp     String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
 
-  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  link       ShareLink? @relation(fields: [linkId], references: [id], onDelete: SetNull)
+  document Document   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  link     ShareLink? @relation(fields: [linkId], references: [id], onDelete: SetNull)
 }

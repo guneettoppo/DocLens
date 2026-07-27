@@ -1,10 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { saveFile } from "@/lib/file-storage";
-import { generateSlug } from "@/lib/nanoid";
+import { getCurrentUser } from "@/lib/auth";
+
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const ALLOWED_TYPES = [
+  "application/pdf",
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getCurrentUser();
+
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
@@ -12,56 +23,47 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Validate file type
-    const allowedMimes = [
-      "application/pdf",
-      "application/vnd.ms-powerpoint",
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
-    if (!allowedMimes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Unsupported file type. Upload PDF, PPT, or DOC files." },
-        { status: 400 }
-      );
-    }
-
-    // Validate size (max 50MB)
-    const maxSize = 50 * 1024 * 1024;
-    if (file.size > maxSize) {
+    if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: "File too large. Maximum size is 50MB." },
         { status: 400 }
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const { filePath } = await saveFile(buffer, file.name);
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Accepted: PDF, PPT, PPTX, DOC, DOCX." },
+        { status: 400 }
+      );
+    }
 
-    const slug = generateSlug();
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const { slug: docSlug, filePath } = await saveFile(buffer, file.name);
 
     const document = await prisma.document.create({
       data: {
-        slug,
+        slug: docSlug,
         originalName: file.name,
         mimeType: file.type,
         fileSize: file.size,
         filePath,
-        pages: 1, // default, updated when viewing
+        pages: 0,
+        userId: user?.id || null,
       },
     });
 
-    return NextResponse.json({
-      id: document.id,
-      slug: document.slug,
-      originalName: document.originalName,
-    });
+    return NextResponse.json(
+      {
+        id: document.id,
+        slug: document.slug,
+        originalName: document.originalName,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(
-      { error: "Failed to upload file" },
+      { error: "Upload failed. Please try again." },
       { status: 500 }
     );
   }
