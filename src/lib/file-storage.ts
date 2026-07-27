@@ -11,7 +11,6 @@ export async function saveFile(
   const fileName = `${slug}${ext}`;
 
   const blob = await put(fileName, buffer, {
-    access: "public",
     addRandomSuffix: false,
   });
 
