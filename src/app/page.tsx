@@ -128,20 +128,20 @@ export default function HomePage() {
           </div>
           <div className="col-span-12 lg:col-span-5 grid grid-cols-2 gap-6 lg:pl-8 self-end">
             <div>
-              <p className="stat-number text-ink">0</p>
-              <p className="stat-label">Page Views<br/>Missed</p>
+              <p className="stat-number text-ink">100%</p>
+              <p className="stat-label">Reader<br/>Attribution</p>
             </div>
             <div>
               <p className="stat-number text-ink">∞</p>
-              <p className="stat-label">Tracking<br/>Depth</p>
+              <p className="stat-label">Per-Page<br/>Tracking</p>
             </div>
             <div>
-              <p className="stat-number text-ink">100%</p>
-              <p className="stat-label">Viewer<br/>Attribution</p>
+              <p className="stat-number text-ink">1 Click</p>
+              <p className="stat-label">Share Link<br/>Creation</p>
             </div>
             <div>
-              <p className="stat-number text-ink">1</p>
-              <p className="stat-label">Click to<br/>Share</p>
+              <p className="stat-number text-ink">1 View</p>
+              <p className="stat-label">Self-Destruct<br/>Capable</p>
             </div>
           </div>
         </div>

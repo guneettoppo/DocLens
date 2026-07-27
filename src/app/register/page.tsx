@@ -33,12 +33,12 @@ export default function RegisterPage() {
           </p>
           <div className="grid grid-cols-2 gap-8 mt-16">
             <div>
-              <p className="stat-number text-ink tracking-tighter" style={{ fontSize: "4rem" }}>∞</p>
-              <p className="stat-label">Tracking Depth</p>
+              <p className="stat-number text-ink tracking-tighter" style={{ fontSize: "4rem" }}>100%</p>
+              <p className="stat-label">Reader Attribution</p>
             </div>
             <div>
-              <p className="stat-number text-ink tracking-tighter" style={{ fontSize: "4rem" }}>100%</p>
-              <p className="stat-label">Attribution</p>
+              <p className="stat-number text-ink tracking-tighter" style={{ fontSize: "4rem" }}>∞</p>
+              <p className="stat-label">Per-Page Tracking</p>
             </div>
           </div>
         </div>
