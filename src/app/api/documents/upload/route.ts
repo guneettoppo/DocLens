@@ -60,10 +60,14 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Upload error:", error);
+    const message =
+      process.env.NODE_ENV === "production"
+        ? error?.message || "Upload failed"
+        : `Upload failed: ${error?.message || error}`;
     return NextResponse.json(
-      { error: "Upload failed. Please try again." },
+      { error: message },
       { status: 500 }
     );
   }
