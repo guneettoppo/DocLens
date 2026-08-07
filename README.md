@@ -19,45 +19,54 @@ Precision document sharing with page-level readership analytics and self-destruc
 
 ```mermaid
 flowchart LR
-    subgraph Client["Client"]
-        B["Browser"]
+    subgraph Client["BROWSER"]
+        B["User Interface"]
     end
 
-    subgraph Vercel["Vercel Edge"]
-        NG["Next.js 16 App"]
-        subgraph API["API Routes"]
-            AUTH["/api/auth/*"]
-            UPLOAD["/api/documents/upload"]
-            LINKS["/api/links/*"]
-            FILES["/api/files/[slug]"]
-            TRACK["/api/analytics/*"]
+    subgraph App["NEXT.JS APP (Vercel)"]
+        direction TB
+        subgraph Routes["API Routes"]
+            AUTH["Auth"]
+            UPLOAD["Upload"]
+            LINKS["Share Links"]
+            FILES["File Serving"]
+            TRACK["Analytics"]
         end
-        VIEWER["/d/[slug] Viewer"]
-        DASH["/dashboard"]
+        VIEWER["Document Viewer"]
+        DASH["Dashboard"]
     end
 
-    subgraph Services["Managed Services"]
+    subgraph Services["DATA SERVICES"]
         PG[("Neon Postgres")]
         BLOB[("Vercel Blob")]
     end
 
-    B --> NG
-    NG --> API
-    NG --> VIEWER
-    NG --> DASH
-    API --> AUTH
-    API --> UPLOAD
-    API --> LINKS
-    API --> FILES
-    API --> TRACK
+    B -->|"HTTPS"| App
+    App --> VIEWER
+    App --> DASH
+    VIEWER --> FILES
+    VIEWER --> TRACK
+    DASH --> TRACK
+    DASH --> FILES
     AUTH --> PG
     UPLOAD --> BLOB
     UPLOAD --> PG
     LINKS --> PG
     FILES --> BLOB
     TRACK --> PG
-    DASH --> PG
-    DASH --> BLOB
+
+    style B fill:#0F172A,color:#FFFFFF,stroke:#0F172A,stroke-width:2px
+    style App fill:#F1F5F9,color:#0F172A,stroke:#94A3B8,stroke-width:2px
+    style Routes fill:#FFFFFF,color:#0F172A,stroke:#CBD5E1,stroke-width:1px
+    style AUTH fill:#FEE2E2,color:#991B1B,stroke:#FCA5A5
+    style UPLOAD fill:#FEE2E2,color:#991B1B,stroke:#FCA5A5
+    style LINKS fill:#FEE2E2,color:#991B1B,stroke:#FCA5A5
+    style FILES fill:#FEE2E2,color:#991B1B,stroke:#FCA5A5
+    style TRACK fill:#FEE2E2,color:#991B1B,stroke:#FCA5A5
+    style VIEWER fill:#FEF3C7,color:#92400E,stroke:#FCD34D
+    style DASH fill:#FEF3C7,color:#92400E,stroke:#FCD34D
+    style PG fill:#ECFDF5,color:#065F46,stroke:#6EE7B7
+    style BLOB fill:#F5F3FF,color:#5B21B6,stroke:#C4B5FD
 ```
 
 ### Data Flow: Upload to Share to Track
@@ -65,44 +74,35 @@ flowchart LR
 ```mermaid
 sequenceDiagram
     autonumber
-    participant U as User (Uploader)
-    participant W as Web App
-    participant A as API Routes
-    participant B as Vercel Blob
-    participant D as Neon Postgres
+    participant Uploader as Uploader
+    participant App as DocLens App
+    participant Blob as Vercel Blob
+    participant DB as Neon Postgres
+    participant Viewer as Viewer
 
-    rect rgb(240, 248, 255)
-        Note over U,D: Upload Phase
-        U->>W: Drop file (PDF/PPT/DOC)
-        W->>A: POST /api/documents/upload
-        A->>B: put(file, { access: public })
-        B-->>A: Blob URL
-        A->>D: create Document record
-        D-->>A: Document (id, slug)
-        A-->>W: Document metadata
-        W-->>U: "Uploaded ✓"
-    end
+    Note over Uploader,DB: PHASE 1 - UPLOAD
+    Uploader->>App: Drop file (PDF / PPT / DOC)
+    App->>Blob: Store file
+    Blob-->>App: Public URL
+    App->>DB: Save document record
+    App-->>Uploader: Document ready
 
-    rect rgb(255, 248, 240)
-        Note over U,D: Share Phase
-        U->>W: Set options (self-destruct, expiry, max views)
-        W->>A: POST /api/links/create
-        A->>D: create ShareLink record
-        D-->>A: ShareLink (slug)
-        A-->>W: Full share URL
-        W-->>U: Share link (copy)
-    end
+    Note over Uploader,DB: PHASE 2 - CREATE SHARE LINK
+    Uploader->>App: Set options (self-destruct, expiry, max views)
+    App->>DB: Create share link
+    DB-->>App: Link slug
+    App-->>Uploader: Share URL (copyable)
 
-    rect rgb(245, 255, 240)
-        Note over U,D: Track Phase
-        U->>W: Open share URL /d/[slug]
-        W->>A: GET /api/links/[slug]
-        A->>D: Validate link (active, expiry, views)
-        D-->>A: Document info
-        A-->>W: Valid + PDF URL
-        W->>A: POST /api/analytics/track (page n)
-        A->>D: create PageView record
-    end
+    Note over Uploader,DB: PHASE 3 - VIEWER READS
+    Viewer->>App: Open share URL
+    App->>DB: Validate link (active, expiry, views)
+    DB-->>App: Valid document info
+    App-->>Viewer: Load PDF viewer
+
+    Note over Uploader,DB: PHASE 4 - TRACKING
+    Viewer->>App: Page change (page n)
+    App->>DB: Record page view
+    DB-->>App: Saved
 ```
 
 ## Database Schema
