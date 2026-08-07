@@ -13,6 +13,154 @@ Precision document sharing with page-level readership analytics and self-destruc
 - **Dashboard analytics** -- per-document stats, readership heatmaps, and full activity logs
 - **No account required for viewers** -- recipients only need a name and email, stored locally
 
+## Architecture
+
+### High-Level System Diagram
+
+```mermaid
+flowchart LR
+    subgraph Client["Client"]
+        B["Browser"]
+    end
+
+    subgraph Vercel["Vercel Edge"]
+        NG["Next.js 16 App"]
+        subgraph API["API Routes"]
+            AUTH["/api/auth/*"]
+            UPLOAD["/api/documents/upload"]
+            LINKS["/api/links/*"]
+            FILES["/api/files/[slug]"]
+            TRACK["/api/analytics/*"]
+        end
+        VIEWER["/d/[slug] Viewer"]
+        DASH["/dashboard"]
+    end
+
+    subgraph Services["Managed Services"]
+        PG[("Neon Postgres")]
+        BLOB[("Vercel Blob")]
+    end
+
+    B --> NG
+    NG --> API
+    NG --> VIEWER
+    NG --> DASH
+    API --> AUTH
+    API --> UPLOAD
+    API --> LINKS
+    API --> FILES
+    API --> TRACK
+    AUTH --> PG
+    UPLOAD --> BLOB
+    UPLOAD --> PG
+    LINKS --> PG
+    FILES --> BLOB
+    TRACK --> PG
+    DASH --> PG
+    DASH --> BLOB
+```
+
+### Data Flow: Upload to Share to Track
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User (Uploader)
+    participant W as Web App
+    participant A as API Routes
+    participant B as Vercel Blob
+    participant D as Neon Postgres
+
+    rect rgb(240, 248, 255)
+        Note over U,D: Upload Phase
+        U->>W: Drop file (PDF/PPT/DOC)
+        W->>A: POST /api/documents/upload
+        A->>B: put(file, { access: public })
+        B-->>A: Blob URL
+        A->>D: create Document record
+        D-->>A: Document (id, slug)
+        A-->>W: Document metadata
+        W-->>U: "Uploaded ✓"
+    end
+
+    rect rgb(255, 248, 240)
+        Note over U,D: Share Phase
+        U->>W: Set options (self-destruct, expiry, max views)
+        W->>A: POST /api/links/create
+        A->>D: create ShareLink record
+        D-->>A: ShareLink (slug)
+        A-->>W: Full share URL
+        W-->>U: Share link (copy)
+    end
+
+    rect rgb(245, 255, 240)
+        Note over U,D: Track Phase
+        U->>W: Open share URL /d/[slug]
+        W->>A: GET /api/links/[slug]
+        A->>D: Validate link (active, expiry, views)
+        D-->>A: Document info
+        A-->>W: Valid + PDF URL
+        W->>A: POST /api/analytics/track (page n)
+        A->>D: create PageView record
+    end
+```
+
+## Database Schema
+
+```mermaid
+erDiagram
+    USER ||--o{ DOCUMENT : owns
+    DOCUMENT ||--o{ SHARELINK : has
+    DOCUMENT ||--o{ PAGEVIEW : tracks
+    SHARELINK ||--o{ PAGEVIEW : records
+
+    USER {
+        string id PK
+        string name
+        string email UK
+        string password
+        datetime createdAt
+    }
+
+    DOCUMENT {
+        string id PK
+        string slug UK
+        string originalName
+        string mimeType
+        int fileSize
+        string filePath
+        int pages
+        string thumbnail
+        string userId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    SHARELINK {
+        string id PK
+        string slug UK
+        string documentId FK
+        boolean isDestruct
+        datetime expiresAt
+        int maxViews
+        int viewCount
+        boolean isActive
+        datetime createdAt
+    }
+
+    PAGEVIEW {
+        string id PK
+        string documentId FK
+        string linkId FK
+        int pageNumber
+        string viewerName
+        string viewerEmail
+        string viewerIp
+        string userAgent
+        datetime createdAt
+    }
+```
+
 ## Stack
 
 | Layer | Technology |
@@ -70,9 +218,57 @@ npx prisma migrate deploy
 
 If your network blocks port 5432, run the migration SQL directly via the Neon SQL Editor (console.neon.tech). The migration file is at `prisma/migrations/20260727000000_init/migration.sql`.
 
+## Self-Destruct & Link Validation Flow
+
+```mermaid
+flowchart TD
+    A["GET /api/links/[slug]"] --> B{Link exists?}
+    B -- "No" --> C["404 Not Found"]
+    B -- "Yes" --> D{isActive?}
+    D -- "No" --> C
+    D -- "Yes" --> E{isDestruct?}
+    E -- "Yes" --> F{viewCount >= 1?}
+    F -- "Yes" --> G["410 Gone — self-destructed"]
+    F -- "No" --> H{Expired?}
+    E -- "No" --> H
+    H -- "Yes" --> I["410 Gone — expired"]
+    H -- "No" --> J{viewCount >= maxViews?}
+    J -- "Yes" --> K["410 Gone — limit reached"]
+    J -- "No" --> L["Increment viewCount"]
+    L --> M["Return document + PDF URL"]
+    M --> N["Viewer loads PDF.js"]
+    N --> O["Each page change fires /api/analytics/track"]
+```
+
 ## Deployment
 
 ### Vercel
+
+```mermaid
+flowchart LR
+    subgraph Local["Local"]
+        CODE["Code + Git"]
+    end
+    subgraph GitHub["GitHub"]
+        REPO["guneettoppo/DocLens"]
+    end
+    subgraph Vercel["Vercel"]
+        BUILD["Build: prisma generate + next build"]
+        ENV["Env Vars"]
+        DEPLOY["Deploy"]
+    end
+    subgraph Services["Services"]
+        NEON[("Neon Postgres")]
+        BLOB[("Vercel Blob")]
+    end
+
+    CODE -->|"git push"| REPO
+    REPO -->|"auto-import"| BUILD
+    BUILD --> DEPLOY
+    ENV --> DEPLOY
+    DEPLOY --> NEON
+    DEPLOY --> BLOB
+```
 
 1. Push the repository to GitHub
 2. Import the project in Vercel
